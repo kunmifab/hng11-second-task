@@ -16,7 +16,7 @@ app.use('/api/users', users);
 app.use('/api/organisations', organisations);
 
 // Export the app for Vercel
-module.exports = { app, prisma };
+module.exports = app;
 
 // Conditionally start the server if the file is executed directly (not via an import)
 if (require.main === module) {
