@@ -94,6 +94,13 @@ router.post('/register', async (req, res) => {
     const user = await prisma.user.findUnique({
         where: {
             email: email
+        },
+        select: { 
+          firstName: true, 
+          lastName: true, 
+          email: true, 
+          phone: true, 
+          userId: true 
         }
     });
 
