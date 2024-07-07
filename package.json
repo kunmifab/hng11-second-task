@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "start": "node api/index.js"
+    "start": "node api/index.js",
+    "postinstall": "prisma generate"
   },
   "author": "",
   "license": "ISC",
