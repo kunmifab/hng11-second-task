@@ -94,13 +94,6 @@ router.post('/register', async (req, res) => {
     const user = await prisma.user.findUnique({
         where: {
             email: email
-        },
-        select: { 
-          firstName: true, 
-          lastName: true, 
-          email: true, 
-          phone: true, 
-          userId: true 
         }
     });
 
@@ -120,6 +113,8 @@ router.post('/register', async (req, res) => {
             "statusCode": 401
         });
     }
+    // Remove the password field before sending the response
+    const { password: userPassword, ...userWithoutPassword } = user;
 
     const token = jwt.sign({ userId: user.userId }, process.env.jwtPrivateKey, { expiresIn: '7d' });
     res.header("x-auth-token", token).status(200).json({
@@ -127,7 +122,7 @@ router.post('/register', async (req, res) => {
             "message": "Login successful",
             "data": {
                 "accessToken": token,
-                "user": user
+                "user": userWithoutPassword 
             }
     });
   });
