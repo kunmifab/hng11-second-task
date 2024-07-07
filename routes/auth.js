@@ -55,7 +55,6 @@ router.post('/register', async (req, res) => {
         const newOrgUser = await prisma.organisationUser.create({
             data: { orgId: newOrg.orgId, userId: newUser.userId }
         });
-        
 
         const token = jwt.sign({ userId: newUser.userId }, process.env.jwtPrivateKey, { expiresIn: '7d' });
         res.header("x-auth-token", token).status(201).json({

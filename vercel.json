@@ -12,5 +12,5 @@
       "dest": "api/index.js"
     }
   ],
-  "buildCommand": "npm install && npx prisma generate"
+  "buildCommand": "npm install && prisma generate && npx prisma migrate deploy"
 }
