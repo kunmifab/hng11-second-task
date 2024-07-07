@@ -128,7 +128,7 @@ router.post('/', auth, async (req, res) => {
   });
 
 
-router.post('/:orgId/users', auth, async (req, res) => {
+router.post('/:orgId/users', async (req, res) => {
     const requestedOrgId = req.params.orgId;
     const { userId } = req.body;
     
