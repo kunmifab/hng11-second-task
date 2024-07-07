@@ -1,16 +1,57 @@
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
-const { app, server } = require('../api/index');
+const jwt = require('jsonwebtoken');
+const app = require('../api/index');
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
-
+let server;
+let userId;
 const { v4: uuidv4 } = require('uuid');
 describe('Auth Endpoints', () => {
+  beforeAll(() => {
+    server = app.listen(3000, () => console.log('Test server listening on port 3000'));
+});
   afterAll(async () => {
     await prisma.$disconnect();
     server.close();
   });
+
+  it('should generate a token with correct expiration and user details', async () => {
+        const uniqueEmail = `john.doe${Date.now()}@example.com`;
+
+        const response = await request(app)
+            .post('/auth/register')
+            .send({
+                firstName: 'John',
+                lastName: 'Doe',
+                email: uniqueEmail,
+                password: 'Password123'
+            });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toHaveProperty('accessToken');
+
+        token = response.body.data.accessToken;
+        const decodedToken = jwt.verify(token, process.env.jwtPrivateKey);
+
+        expect(decodedToken).toHaveProperty('userId');
+        expect(decodedToken.exp).toBeGreaterThan(Math.floor(Date.now() / 1000));
+        
+        userId = decodedToken.userId;
+    });
+
+    it('should fail if token is expired', async () => {
+        const expiredToken = jwt.sign({ userId }, process.env.jwtPrivateKey, { expiresIn: '1ms' });
+
+        await new Promise((resolve) => setTimeout(resolve, 2)); // Wait for token to expire
+
+        try {
+            jwt.verify(expiredToken, process.env.jwtPrivateKey);
+        } catch (error) {
+            expect(error.name).toBe('TokenExpiredError');
+        }
+    });
 
   describe('POST /auth/register', () => {
     it('should register user successfully with default organisation', async () => {
