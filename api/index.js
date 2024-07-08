@@ -15,6 +15,15 @@ app.use('/auth', auth);
 app.use('/api/users', users);
 app.use('/api/organisations', organisations);
 
+// 404 Middleware
+app.use((req, res, next) => {
+    console.log({
+        message: 'Route not found',
+        statusCode: 404,
+        "404 Not Found": req.method + req.originalUrl
+    });
+    return res.status(404).json({ message: 'Route not found' });
+  });
 // Export the app for Vercel
 module.exports = app;
 

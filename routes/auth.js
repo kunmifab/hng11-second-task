@@ -57,7 +57,7 @@ router.post('/register', async (req, res) => {
         });
 
         const token = jwt.sign({ userId: newUser.userId }, process.env.jwtPrivateKey, { expiresIn: '7d' });
-        res.header("x-auth-token", token).status(201).json({
+        return res.header("x-auth-token", token).status(201).json({
             "status": "success",
             "message": "Registration successful",
             "data": {
@@ -67,7 +67,7 @@ router.post('/register', async (req, res) => {
         });
     } catch (error) {
       console.error('Error creating user:', error);
-      res.status(400).json({ 
+      return res.status(400).json({ 
             "status": "Bad request",
             "message": "Registration unsuccessful",
             "statusCode": 400 
@@ -117,7 +117,7 @@ router.post('/register', async (req, res) => {
     const { password: userPassword, ...userWithoutPassword } = user;
 
     const token = jwt.sign({ userId: user.userId }, process.env.jwtPrivateKey, { expiresIn: '7d' });
-    res.header("x-auth-token", token).status(200).json({
+    return header("x-auth-token", token).status(200).json({
             "status": "success",
             "message": "Login successful",
             "data": {

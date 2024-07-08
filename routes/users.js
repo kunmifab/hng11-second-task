@@ -7,7 +7,6 @@ const auth = require('../middlewares/auth');
 const prisma = new PrismaClient();
 
   router.get('/:id',auth, async(req, res) => {
-
     if(req.params.id === req.user.userId){
         const user = await prisma.user.findUnique({
             where: {
@@ -22,7 +21,7 @@ const prisma = new PrismaClient();
             }
         });
 
-        res.status(200).json({
+        return res.status(200).json({
             "status": "success",
             "message": `Found your record with id: ${req.params.id}`,
             "data": user
@@ -42,8 +41,7 @@ const prisma = new PrismaClient();
         });
 
         if(!user){
-            console.log('not found')
-            res.status(404).json({
+            return res.status(404).json({
                 "status": "failed",
                 "message": `Not Found`,
             });
@@ -73,7 +71,7 @@ const prisma = new PrismaClient();
         }
 
         if(!check){
-            res.status(404).json({
+            return res.status(404).json({
                 "status": "failed",
                 "message": `Not Found`,
             });
